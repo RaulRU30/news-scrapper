@@ -16,7 +16,7 @@ def extraer_detalles(url):
     elif PULSO_URL in dominio:
         return extraer_detalles_pulso_slp(url)
     else:
-        print(f"⚠️ Sitio no soportado: {dominio}")
+        print(f"Sitio no soportado: {dominio}")
         return None
 
 
@@ -49,7 +49,7 @@ def extraer_detalles_plano_informativo(url):
         }
 
     except Exception as e:
-        print(f"❌ Error en Plano Informativo ({url}): {e}")
+        print(f"Error ({url}): {e}")
         return None
 
 
@@ -66,7 +66,7 @@ def extraer_fecha_plano(soup: BeautifulSoup) -> str:
                 dt = datetime.strptime(f"{fecha_str} {hora_str}", "%d/%m/%Y %H:%M")
                 return dt.strftime("%Y-%m-%d %H:%M")
         except Exception as e:
-            print(f"❌ Error al procesar fecha: {e}")
+            print(f"Error al procesar fecha: {e}")
 
     return "Sin fecha"
 
@@ -104,7 +104,7 @@ def extraer_detalles_pulso_slp(url):
         }
 
     except Exception as e:
-        print(f"❌ Error al procesar {url}: {e}")
+        print(f"Error al procesar {url}: {e}")
         return None
 
 
@@ -136,20 +136,29 @@ def extraer_fecha_pulso(texto: str) -> str:
         dt = datetime.strptime(texto, "%m %d, %Y %I:%M %p")
         return dt.strftime("%Y-%m-%d %H:%M")
     except Exception as e:
-        print(f"⚠️ Error al convertir fecha: {e}")
+        print(f"Error al convertir fecha: {e}")
         return "Sin fecha"
+
+
+def imprimir_noticia(noticia):
+    print(f"🌐 {noticia['sitio']}")
+    print(f"📰 {noticia['titulo']}")
+    print(f"📆 {noticia['fecha']}")
+    print(f"🖼️ {noticia['imagen']}")
+    print(f"📝 {noticia['subtitulo']}")
+    print(f"📄 {noticia['contenido'][:300]}\n")
 
 
 if __name__ == "__main__":
 
-    n = extraer_detalles(
+    n_pulso = extraer_detalles(
         "https://pulsoslp.com.mx/slp/alcalde-capital-potosina-proceso-peticiones-obras-publicas/1943744"
     )
 
-    # print(n)
-    print(f"🌐 {n['sitio']}")
-    print(f"📰 {n['titulo']}")
-    print(f"📆 {n['fecha']}")
-    print(f"🖼️ {n['imagen']}")
-    print(f"📝 {n['subtitulo']}")
-    print(f"📄 {n['contenido'][:300]}\n")
+    imprimir_noticia(n_pulso)
+
+    n_plano = extraer_detalles(
+        "https://planoinformativo.com/1083372/sigue-vigente-acaba-tu-deuda-de-una-vez-de-interapas"
+    )
+
+    imprimir_noticia(n_plano)
