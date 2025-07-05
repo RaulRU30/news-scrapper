@@ -10,7 +10,7 @@ class PulsoParserSpider(scrapy.Spider):
     allowed_domains = ["pulsoslp.com.mx"]
 
     def start_requests(self):
-        with open("urls.json", "r", encoding="utf-8") as f:
+        with open("output/urls.json", "r", encoding="utf-8") as f:
             urls = json.load(f)
             for obj in urls:
                 yield scrapy.Request(obj["url"], callback=self.parse_noticia)
