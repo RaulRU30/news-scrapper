@@ -12,10 +12,10 @@ def run_pipeline(modo="slp", palabra=None):
     if modo == "busqueda" and palabra:
         args["q"] = palabra
 
-    run_spider("pulso_urls", "output/urls.json", args)
-    run_spider("pulso_parser", "output/noticias.json")
+    run_spider("pulso_urls", "urls.json", args)
+    run_spider("pulso_parser", "noticias.json")
 
-    root = Path(__file__).resolve().parent.parent  # <- te mueve a news-scrapper/
+    root = Path(__file__).resolve().parent.parent
     entrada = str(root / "output" / "noticias.json")
     salida = str(root / "output" / "noticias_resumen.json")
 

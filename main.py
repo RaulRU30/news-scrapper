@@ -16,7 +16,7 @@ def index():
 @app.get("/resumir")
 def resumir(modo: str = "slp", q: str = None):
     """Ejecuta todo el pipeline de scraping y devuelve las noticias resumidas."""
-
+    print("Testeanding")
     run_pipeline(modo=modo, palabra=q)
 
     resumen_path = Path(__file__).resolve().parent / "output" / "noticias_resumen.json"
