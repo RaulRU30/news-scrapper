@@ -19,6 +19,9 @@ class PulsoParserSpider(scrapy.Spider):
         titulo = response.css("h1.blog__heading.mb-1.h1titulonota::text").get()
         subtitulo = response.css("h2.blog__heading.mb-1.h2sumarioseo::text").get()
         imagen = response.css("#imagenPrincipal::attr(src)").get()
+        if not imagen:
+            imagen = response.css("img.img-fluid::attr(src)").get()
+
         fecha_raw = response.css(".blog-meta__date::text").get()
         contenido = " ".join(
             p.get().strip() for p in response.css("#textElement p:not([style])::text")

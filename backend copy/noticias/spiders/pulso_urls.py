@@ -16,8 +16,10 @@ class PulsoUrlsSpider(scrapy.Spider):
             url = "https://pulsoslp.com.mx/slp"
         elif self.modo == "mundo":
             url = "https://pulsoslp.com.mx/mundo"
-        elif self.modo == "busqueda" and self.q:
-            url = f"https://pulsoslp.com.mx/busqueda?q={self.q}"
+        elif self.modo == "nacional":
+            url = "https://pulsoslp.com.mx/nacional"
+        elif self.modo == "seguridad":
+            url = "https://pulsoslp.com.mx/seguridad"
         else:
             raise ValueError("Modo inválido o palabra clave no especificada")
 

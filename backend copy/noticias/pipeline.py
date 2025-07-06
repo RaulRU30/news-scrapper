@@ -3,14 +3,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+from noticias.search import buscar_noticias
 from noticias.resumen import procesar_todas_las_noticias
 
 
-def run_pipeline(modo="slp", palabra=None):
+def obtener_noticias_default(modo="slp"):
     """Función para ejecutar todo el pipeline desde FastAPI."""
     args = {"modo": modo}
-    if modo == "busqueda" and palabra:
-        args["q"] = palabra
 
     run_spider("pulso_urls", "urls.json", args)
     run_spider("pulso_parser", "noticias.json")
@@ -20,6 +19,40 @@ def run_pipeline(modo="slp", palabra=None):
     salida = str(root / "output" / "noticias_resumen.json")
 
     procesar_todas_las_noticias(entrada, salida)
+
+
+def obtener_noticias_busqueda(
+    q="upslp*",
+    page="1",
+    top="12",
+    orderby="creationdate desc",
+    fromdate="2025-04-23",
+    todate="2025-07-05",
+):
+    """Pipeline completo usando búsqueda por API en lugar del spider de URLs."""
+
+    root = Path(__file__).resolve().parent.parent
+    output_dir = root / "output"
+    output_dir.mkdir(exist_ok=True)
+    archivo_urls = output_dir / "urls.json"
+
+    buscar_noticias(
+        q=q,
+        page=page,
+        top=top,
+        orderby=orderby,
+        fromdate=fromdate,
+        todate=todate,
+        output_file=str(archivo_urls),
+    )
+
+    # Paso 2: Parsear contenido usando spider 'pulso_parser'
+    run_spider("pulso_parser", output_file="noticias.json")
+
+    # Paso 3: Ejecutar procesamiento (resumen)
+    entrada = output_dir / "noticias.json"
+    salida = output_dir / "noticias_resumen.json"
+    procesar_todas_las_noticias(str(entrada), str(salida))
 
 
 def run_spider(spider_name, output_file, args=None):
