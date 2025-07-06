@@ -8,8 +8,18 @@ from noticias.search import buscar_noticias
 from noticias.pipeline import obtener_noticias_busqueda, obtener_noticias_default
 import requests
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -17,11 +27,11 @@ def index():
     return {"msg": "API de scraping de noticias"}
 
 
-@app.get("/noticias_slp")
+@app.get("/noticias")
 def resumir(modo: str = "slp", q: str = None):
     """Ejecuta todo el pipeline de scraping y devuelve las noticias resumidas."""
     print("Testeanding")
-    obtener_noticias_default(modo=modo, palabra=q)
+    obtener_noticias_default(modo=modo)
 
     resumen_path = Path(__file__).resolve().parent / "output" / "noticias_resumen.json"
 
